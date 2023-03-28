@@ -25,6 +25,7 @@ param blobContainerName string
   'node'
   'dotnet'
   'java'
+  'python'
 ])
 param runtime string = 'dotnet'
 
@@ -72,7 +73,7 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
           value: runtime
         }
         {
-          name: 'MyBlobContainer'
+          name: 'FINSUM_DOCUMENT_CONTAINER'
           value: blobContainerName
         }
       ]

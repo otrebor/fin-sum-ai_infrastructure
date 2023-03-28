@@ -5,7 +5,7 @@ targetScope = 'subscription'
 @minLength(2)
 @maxLength(10)
 @description('Prefix for all resource names.')
-param appNamePrefix string = 'hackathon'
+param appNamePrefix string = 'finsumai'
 
 @description('Set of tags to apply to all resources.')
 param tags object = {
@@ -20,14 +20,6 @@ param appInsightsLocation string = 'WestEurope'
 
 @description('Location for Web Application (HOSTING PLAN)')
 param hostingPlanLocation string = 'WestEurope'
-
-@description('The language worker runtime to load in the function app.')
-@allowed([
-  'node'
-  'dotnet'
-  'java'
-])
-param runtime string = 'dotnet'
 
 var nameSuffix = uniqueString(hackathon_rg.id)
 
@@ -87,18 +79,35 @@ module hackathon_ai './modules/appinsights.bicep' = {
   scope: hackathon_rg
 }
 
-var appFunctionName = 'af-${appNamePrefix}-${nameSuffix}'
+var cSharpAppFunctionName = 'afcs-${appNamePrefix}-${nameSuffix}'
 
-module hackathon_af './modules/functionapp.bicep' = {
-  name: 'myFunctionAppDeployment'
+module hackathon_afcs './modules/functionappcs.bicep' = {
+  name: 'myCSharpFunctionAppDeployment'
   params: {
     location: hostingPlanLocation
     applicationInsightInstrumentationKey: hackathon_ai.outputs.applicationInsightInstrumentationKey
     blobStorageConnectionString: hackathon_stg.outputs.blobStorageConnectionString
     functionAppHostingPlanId: hackathon_hp.outputs.hostingPlanId
-    functionAppName: appFunctionName
+    functionAppName: cSharpAppFunctionName
     tags: tags
-    runtime: runtime
+    runtime: 'dotnet'
+    blobContainerName: hackathon_stg.outputs.blobContainerName
+  }
+  scope: hackathon_rg
+}
+
+var pythonAppFunctionName = 'afpy-${appNamePrefix}-${nameSuffix}'
+
+module hackathon_afpy './modules/functionapppy.bicep' = {
+  name: 'myPythonFunctionAppDeployment'
+  params: {
+    location: hostingPlanLocation
+    applicationInsightInstrumentationKey: hackathon_ai.outputs.applicationInsightInstrumentationKey
+    blobStorageConnectionString: hackathon_stg.outputs.blobStorageConnectionString
+    functionAppHostingPlanId: hackathon_hp.outputs.hostingPlanId
+    functionAppName: pythonAppFunctionName
+    tags: tags
+    runtime: 'python'
     blobContainerName: hackathon_stg.outputs.blobContainerName
   }
   scope: hackathon_rg

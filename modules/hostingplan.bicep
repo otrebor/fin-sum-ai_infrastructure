@@ -14,12 +14,16 @@ param tags object = {}
 resource hackathon_hp 'Microsoft.Web/serverfarms@2021-03-01' = {
   name: hostingPlanName
   location: location
+  kind: 'linux'        // required for using linux
   tags: tags
   sku: {
     name: 'Y1'
+    //capacity: 2
     tier: 'Dynamic'
   }
-  properties: {}
+  properties: {
+    reserved: true     // required for using linux
+  }
 }
 
 output hostingPlanId string = hackathon_hp.id
