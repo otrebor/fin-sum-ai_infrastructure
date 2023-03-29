@@ -17,8 +17,7 @@ param applicationInsightInstrumentationKey string
 @description('Function App Storage Account Connection String')
 param blobStorageConnectionString string
 
-@description('Function App Blob Container Name')
-param blobContainerName string
+
 
 @description('The language worker runtime to load in the function app.')
 @allowed([
@@ -30,7 +29,41 @@ param blobContainerName string
 param runtime string = 'python'
 
 @description('Tags to apply to the Function App Instance')
+param appSpecificAppSettings array = []
+
+@description('Tags to apply to the Function App Instance')
 param tags object = {}
+
+var runtimeSpecificAppSettings =  [
+  {
+    name: 'AzureWebJobsStorage'
+    value: blobStorageConnectionString
+  }
+  {
+    name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
+    value: blobStorageConnectionString
+  }
+  {
+    name: 'WEBSITE_CONTENTSHARE'
+    value: toLower(functionAppName)
+  }
+  {
+    name: 'FUNCTIONS_EXTENSION_VERSION'
+    value: '~4'
+  }
+  {
+    name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
+    value: applicationInsightInstrumentationKey
+  }
+  {
+    name: 'FUNCTIONS_WORKER_RUNTIME'
+    value: runtime
+  }
+  {
+    name: 'AzureWebJobsSecretStorageType'
+    value: 'files'
+  }
+]
 
 resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
   name: functionAppName
@@ -45,42 +78,11 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
     clientAffinityEnabled: false
     httpsOnly: true
     siteConfig: {
-      appSettings: [
-        {
-          name: 'AzureWebJobsStorage'
-          value: blobStorageConnectionString
-        }
-        {
-          name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
-          value: blobStorageConnectionString
-        }
-        {
-          name: 'WEBSITE_CONTENTSHARE'
-          value: toLower(functionAppName)
-        }
-        {
-          name: 'FUNCTIONS_EXTENSION_VERSION'
-          value: '~4'
-        }
-        {
-          name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
-          value: applicationInsightInstrumentationKey
-        }
-        {
-          name: 'FUNCTIONS_WORKER_RUNTIME'
-          value: runtime
-        }
-        {
-          name: 'FINSUM_DOCUMENT_CONTAINER'
-          value: blobContainerName
-        }
-        {
-          name: 'AzureWebJobsSecretStorageType'
-          value: 'files'
-        }
-      ]
+      appSettings: concat(runtimeSpecificAppSettings, appSpecificAppSettings)
       cors: {
-        allowedOrigins: 'https://portal.azure.com'
+        allowedOrigins: [
+          'https://portal.azure.com'
+        ]
       }
       pythonVersion: '3.10'
       linuxFxVersion: 'Python|3.10'

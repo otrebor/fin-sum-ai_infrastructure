@@ -79,36 +79,30 @@ module hackathon_ai './modules/insights/app_insights.bicep' = {
   scope: hackathon_rg
 }
 
-var cSharpAppFunctionName = 'afcs-${appNamePrefix}-${nameSuffix}'
-
-module hackathon_afcs './modules/web/function_apps/functionapp_cs.bicep' = {
-  name: 'myCSharpFunctionAppDeployment'
+var formRecognizerServiceName = 'frmcs-${appNamePrefix}-${nameSuffix}'
+module finsum_formRecognizer './modules/cognitive_services/form_recognizer.bicep' = {
+  name: 'myFormRecognizerDeployment'
   params: {
+    formRecognizerServiceName: formRecognizerServiceName
     location: hostingPlanLocation
-    applicationInsightInstrumentationKey: hackathon_ai.outputs.applicationInsightInstrumentationKey
-    blobStorageConnectionString: hackathon_stg.outputs.blobStorageConnectionString
-    functionAppHostingPlanId: hackathon_hp.outputs.hostingPlanId
-    functionAppName: cSharpAppFunctionName
     tags: tags
-    runtime: 'dotnet'
-    blobContainerName: hackathon_stg.outputs.blobContainerName
   }
   scope: hackathon_rg
 }
 
-var pythonAppFunctionName = 'afpy-${appNamePrefix}-${nameSuffix}'
-
-module hackathon_afpy './modules/web/function_apps/functionapp_py.bicep' = {
-  name: 'myPythonFunctionAppDeployment'
+module finsum_functionApps './modules/web/function_apps/functionapps.bicep' = {
+  name: 'myFunctionsAppDeployment'
   params: {
+    appNamePrefix: appNamePrefix
+    nameSuffix: nameSuffix
     location: hostingPlanLocation
     applicationInsightInstrumentationKey: hackathon_ai.outputs.applicationInsightInstrumentationKey
     blobStorageConnectionString: hackathon_stg.outputs.blobStorageConnectionString
-    functionAppHostingPlanId: hackathon_hp.outputs.hostingPlanId
-    functionAppName: pythonAppFunctionName
+    hostingPlanId: hackathon_hp.outputs.hostingPlanId
     tags: tags
-    runtime: 'python'
     blobContainerName: hackathon_stg.outputs.blobContainerName
+    formRecognizerApiEndpoint: finsum_formRecognizer.outputs.formRecognizerEndpoint
+    formRecognizerApiKey: finsum_formRecognizer.outputs.formRecognizerApiKey
   }
   scope: hackathon_rg
 }
@@ -154,3 +148,16 @@ module hackathon_dis './modules/automation/diagnosticsettings.bicep' = {
   }
   scope: hackathon_rg
 }
+
+// var diagnosticSettingsName = 'frmcs-${appNamePrefix}-${nameSuffix}'
+// module finsum_DiagnosticSettingsFunctionApp './modules/insights/diagnostic_settings.bicep' = {
+//   name: 'myDiagnosticSettingsFunctionAppDeployment'
+//   params: {
+//     diagnosticSettingsName: diagnosticSettingsName
+//     logAnalyticsWorkspaceId: logAnalyticsWorkspaceId
+//   }
+//   scope: hackathon_rg
+// }
+
+
+

@@ -1,6 +1,6 @@
 // ========== functionapp.bicep ==========
 
-// targetScope = 'resourceGroup'  -  default value
+// targetScope = 'resourceGroup' 
 
 @description('Function App Location')
 param location string = resourceGroup().location
@@ -17,9 +17,6 @@ param applicationInsightInstrumentationKey string
 @description('Function App Storage Account Connection String')
 param blobStorageConnectionString string
 
-@description('Function App Blob Container Name')
-param blobContainerName string
-
 @description('The language worker runtime to load in the function app.')
 @allowed([
   'node'
@@ -30,7 +27,47 @@ param blobContainerName string
 param runtime string = 'dotnet'
 
 @description('Tags to apply to the Function App Instance')
+param appSpecificAppSettings array = []
+
+
+@description('Tags to apply to the Function App Instance')
 param tags object = {}
+
+
+var runtimeSpecificAppSettings = [
+  {
+    name: 'AzureWebJobsStorage'
+    value: blobStorageConnectionString
+  }
+  {
+    name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
+    value: blobStorageConnectionString
+  }
+  {
+    name: 'WEBSITE_CONTENTSHARE'
+    value: toLower(functionAppName)
+  }
+  {
+    name: 'FUNCTIONS_EXTENSION_VERSION'
+    value: '~4'
+  }
+  {
+    name: 'WEBSITE_DOTNET_DEFAULT_VERSION'
+    value: '~6'
+  }
+  {
+    name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
+    value: applicationInsightInstrumentationKey
+  }
+  {
+    name: 'APPLICATIONINSIGHTS_ENABLE_AGENT'
+    value: 'true'
+  }
+  {
+    name: 'FUNCTIONS_WORKER_RUNTIME'
+    value: runtime
+  }
+]
 
 resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
   name: functionAppName
@@ -43,44 +80,7 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
   properties: {
     serverFarmId: functionAppHostingPlanId
     siteConfig: {
-      appSettings: [
-        {
-          name: 'AzureWebJobsStorage'
-          value: blobStorageConnectionString
-        }
-        {
-          name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
-          value: blobStorageConnectionString
-        }
-        {
-          name: 'WEBSITE_CONTENTSHARE'
-          value: toLower(functionAppName)
-        }
-        {
-          name: 'FUNCTIONS_EXTENSION_VERSION'
-          value: '~4'
-        }
-        {
-          name: 'WEBSITE_DOTNET_DEFAULT_VERSION'
-          value: '~6'
-        }
-        {
-          name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
-          value: applicationInsightInstrumentationKey
-        }
-        {
-          name: 'APPLICATIONINSIGHTS_ENABLE_AGENT'
-          value: 'true'
-        }
-        {
-          name: 'FUNCTIONS_WORKER_RUNTIME'
-          value: runtime
-        }
-        {
-          name: 'FINSUM_DOCUMENT_CONTAINER'
-          value: blobContainerName
-        }
-      ]
+      appSettings: concat(runtimeSpecificAppSettings, appSpecificAppSettings)
       ftpsState: 'FtpsOnly'
       minTlsVersion: '1.2'
     }

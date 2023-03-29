@@ -33,3 +33,5 @@ resource frmRecognizer 'Microsoft.CognitiveServices/accounts@2021-04-30' = {
 }
 
 output formRecognizerName string = frmRecognizer.name
+output formRecognizerEndpoint string = frmRecognizer.properties.endpoint
+output formRecognizerApiKey string = frmRecognizer.listKeys().key1
