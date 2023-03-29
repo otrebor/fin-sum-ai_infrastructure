@@ -35,7 +35,7 @@ param tags object = {}
 resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
   name: functionAppName
   location: location
-  kind: 'functionapp'
+  kind: 'functionapp,linux'
   identity: {
     type: 'SystemAssigned'
   }
@@ -67,6 +67,10 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
         {
           name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
           value: applicationInsightInstrumentationKey
+        }
+        {
+          name: 'APPLICATIONINSIGHTS_ENABLE_AGENT'
+          value: 'true'
         }
         {
           name: 'FUNCTIONS_WORKER_RUNTIME'

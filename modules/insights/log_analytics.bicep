@@ -5,6 +5,17 @@
 @description('The name of the Log Analytics Workspace')
 param logAnalyticsWorkspaceName string
 
+@description('Sku of the workspace')
+@allowed([
+  'PerGB2018'
+  'Free'
+  'Standalone'
+  'PerNode'
+  'Standard'
+  'Premium'
+])
+param sku string
+
 @description('The name of the Linked Workspace')
 param linkedService string = 'Automation'
 
@@ -23,7 +34,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-08
   tags: tags
   properties: {
     sku: {
-      name: 'pergb2018'
+      name: sku
     }
   }
 }

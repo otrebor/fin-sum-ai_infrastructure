@@ -28,22 +28,22 @@ resource hackathon_rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: resourceGrouplocation 
 }
 
-var kvName = 'kv${appNamePrefix}${nameSuffix}'
+// var kvName = 'kv${appNamePrefix}${nameSuffix}'
 
-module hackathon_kv './modules/keyvault.bicep' = {
-  name: 'myKeyVaultDeployment'
-  params: {
-    location: hackathon_rg.location
-    keyVaultName: kvName
-    tags: tags
-  }
-  scope: hackathon_rg
-}
+// module hackathon_kv './modules/key_vault/keyvault.bicep' = {
+//   name: 'myKeyVaultDeployment'
+//   params: {
+//     location: hackathon_rg.location
+//     keyVaultName: kvName
+//     tags: tags
+//   }
+//   scope: hackathon_rg
+// }
 
 var saName = 'sa${appNamePrefix}${nameSuffix}'
 var bcName = 'bc-${appNamePrefix}-${nameSuffix}'
 
-module hackathon_stg './modules/storage.bicep' = {
+module hackathon_stg './modules/storage/storage.bicep' = {
   name: 'myStorageDeployment'
   params: {
     location: hackathon_rg.location
@@ -57,7 +57,7 @@ module hackathon_stg './modules/storage.bicep' = {
 
 var hpName = 'hp-${appNamePrefix}-${nameSuffix}'
 
-module hackathon_hp './modules/hostingplan.bicep' = {
+module hackathon_hp './modules/web/hostingplan.bicep' = {
   name: 'myHostingPlanDeployment'
   params: {
     location: hostingPlanLocation
@@ -69,7 +69,7 @@ module hackathon_hp './modules/hostingplan.bicep' = {
 
 var appInsName = 'ai-${appNamePrefix}-${nameSuffix}'
 
-module hackathon_ai './modules/appinsights.bicep' = {
+module hackathon_ai './modules/insights/app_insights.bicep' = {
   name: 'myAppInsightsDeployment'
   params: {
     location: appInsightsLocation
@@ -81,7 +81,7 @@ module hackathon_ai './modules/appinsights.bicep' = {
 
 var cSharpAppFunctionName = 'afcs-${appNamePrefix}-${nameSuffix}'
 
-module hackathon_afcs './modules/functionappcs.bicep' = {
+module hackathon_afcs './modules/web/function_apps/functionapp_cs.bicep' = {
   name: 'myCSharpFunctionAppDeployment'
   params: {
     location: hostingPlanLocation
@@ -98,7 +98,7 @@ module hackathon_afcs './modules/functionappcs.bicep' = {
 
 var pythonAppFunctionName = 'afpy-${appNamePrefix}-${nameSuffix}'
 
-module hackathon_afpy './modules/functionapppy.bicep' = {
+module hackathon_afpy './modules/web/function_apps/functionapp_py.bicep' = {
   name: 'myPythonFunctionAppDeployment'
   params: {
     location: hostingPlanLocation
@@ -115,7 +115,7 @@ module hackathon_afpy './modules/functionapppy.bicep' = {
 
 var automationAccountName = 'aa-${appNamePrefix}-${nameSuffix}'
 
-module hackathon_aa './modules/azureautomation.bicep' = {
+module hackathon_aa './modules/automation/azureautomation.bicep' = {
   name: 'myAutomationAccountDeployment'
   params: {
     automationAccountName: automationAccountName
@@ -128,7 +128,7 @@ module hackathon_aa './modules/azureautomation.bicep' = {
 var automationAccountLinkedWorkspaceName = 'Automation' //'aalws${appNamePrefix}${nameSuffix}'
 var logAnalyticsWorkspaceName = 'laws-${appNamePrefix}-${nameSuffix}'
 
-module hackathon_law './modules/loganalytics.bicep' = {
+module hackathon_law './modules/insights/log_analytics.bicep' = {
   name: 'myLogAnalyticsDeployment'
   params: {
     automationAccountId: hackathon_aa.outputs.automationAccountId
@@ -136,13 +136,14 @@ module hackathon_law './modules/loganalytics.bicep' = {
     linkedService: automationAccountLinkedWorkspaceName
     logAnalyticsWorkspaceName: logAnalyticsWorkspaceName
     tags: tags
+    sku: 'PerGB2018'
   }
   scope: hackathon_rg
 }
 
 var logAnalyticsWorkspaceId = hackathon_law.outputs.logAnalyticsWorkspaceId
 
-module hackathon_dis './modules/diagnosticsettings.bicep' = {
+module hackathon_dis './modules/automation/diagnosticsettings.bicep' = {
   name: 'myDiagnosticSettingsDeployment'
   params: {
     location: hostingPlanLocation
