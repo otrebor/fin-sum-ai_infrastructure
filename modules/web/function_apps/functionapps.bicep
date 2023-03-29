@@ -27,6 +27,10 @@ var appSpecificAppSettings = [
     value: blobContainerName
   }
   {
+    name: 'FIN_SUM_DOCUMENT_PATH'
+    value: 'financial-reports'
+  }
+  {
     name: 'FORM_RECOGNIZER_API_ENDPOINT'
     value: formRecognizerApiEndpoint
   }
