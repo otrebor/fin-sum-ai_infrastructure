@@ -27,7 +27,7 @@ var appSpecificAppSettings = [
     value: blobContainerName
   }
   {
-    name: 'FINSUM_REPORT_PATH'
+    name: 'FINSUM_REPORTS_PATH'
     value: 'financial-reports'
   }
   {
