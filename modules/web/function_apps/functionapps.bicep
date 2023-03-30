@@ -20,6 +20,9 @@ param formRecognizerApiEndpoint string
 @secure()
 param formRecognizerApiKey string
 
+@secure()
+param azureOpenAIApiKey string = newGuid()
+
 
 var appSpecificAppSettings = [
   {
@@ -33,6 +36,14 @@ var appSpecificAppSettings = [
   {
     name: 'FINSUM_REPORTS_OCR_PATH'
     value: 'financial-reports-ocr'
+  }
+  {
+    name: 'FINSUM_REPORTS_SUMMARY_PATH'
+    value: 'financial-report-summaries'
+  }
+  {
+    name: 'AZURE_OPENAI_API_KEY'
+    value: azureOpenAIApiKey
   }
   {
     name: 'FORM_RECOGNIZER_API_ENDPOINT'
