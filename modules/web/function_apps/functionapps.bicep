@@ -31,6 +31,10 @@ var appSpecificAppSettings = [
     value: 'financial-reports'
   }
   {
+    name: 'FINSUM_REPORTS_OCR_PATH'
+    value: 'financial-reports-ocr'
+  }
+  {
     name: 'FORM_RECOGNIZER_API_ENDPOINT'
     value: formRecognizerApiEndpoint
   }
