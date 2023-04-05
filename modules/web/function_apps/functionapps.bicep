@@ -18,7 +18,9 @@ param applicationInsightInstrumentationKey string
 param formRecognizerApiEndpoint string
 
 @secure()
-param formRecognizerApiKey string
+param formRecognizerApiKey string = newGuid()
+
+param azureOpenAIApiEndpoint string = 'OPENAI_API_ENDPOINT'
 
 @secure()
 param azureOpenAIApiKey string = newGuid()
@@ -44,6 +46,10 @@ var appSpecificAppSettings = [
   {
     name: 'AZURE_OPENAI_API_KEY'
     value: azureOpenAIApiKey
+  }
+  {
+    name: 'AZURE_OPENAI_API_ENDPOINT'
+    value: azureOpenAIApiEndpoint
   }
   {
     name: 'FORM_RECOGNIZER_API_ENDPOINT'

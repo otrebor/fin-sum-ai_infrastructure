@@ -9,10 +9,14 @@ param location string = resourceGroup().location
 ])
 param sku string = 'S0'
 
+@description('Tags to apply to the Application Insights Instance')
+param tags object = {}
+
 resource open_ai 'Microsoft.CognitiveServices/accounts@2022-03-01' = {
   name: openAIServiceName
   location: location
   kind: 'OpenAI'
+  tags: tags
   sku: {
     name: sku
   }
@@ -20,3 +24,7 @@ resource open_ai 'Microsoft.CognitiveServices/accounts@2022-03-01' = {
     customSubDomainName: toLower(openAIServiceName)
   }
 }
+
+output openAIName string = open_ai.name
+output openAIEndpoint string = open_ai.properties.endpoint
+output openAIApiKey string = open_ai.listKeys().key1

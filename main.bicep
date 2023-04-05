@@ -13,7 +13,7 @@ param tags object = {
 }
 
 @description('Location for resource group.')
-param resourceGrouplocation string = 'GermanyWestCentral'
+param resourceGrouplocation string = 'WestEurope'
 
 @description('Location for Application Insights')
 param appInsightsLocation string = 'WestEurope'
@@ -21,12 +21,26 @@ param appInsightsLocation string = 'WestEurope'
 @description('Location for Web Application (HOSTING PLAN)')
 param hostingPlanLocation string = 'WestEurope'
 
-var nameSuffix = uniqueString(hackathon_rg.id)
+@allowed([
+  'new'
+  'existing'
+])
+param newOrExistingResourceGroup string = 'existing'
 
-resource hackathon_rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: 'rg-${appNamePrefix}'
+var resourceGroupName = 'Cteam8'
+
+
+resource hackathon_rg_new 'Microsoft.Resources/resourceGroups@2021-04-01' = if (newOrExistingResourceGroup == 'new') {
+  name: resourceGroupName
   location: resourceGrouplocation 
+  tags: tags
+} 
+
+resource hackathon_rg 'Microsoft.Resources/resourceGroups@2021-04-01' existing = {
+  name: resourceGroupName
 }
+
+var nameSuffix = uniqueString(hackathon_rg.id)
 
 // var kvName = 'kv${appNamePrefix}${nameSuffix}'
 
@@ -52,6 +66,9 @@ module hackathon_stg './modules/storage/storage.bicep' = {
     tags: tags
   }
   scope: hackathon_rg
+  dependsOn: [
+    hackathon_rg
+  ]
 }
 
 
@@ -90,6 +107,17 @@ module finsum_formRecognizer './modules/cognitive_services/form_recognizer.bicep
   scope: hackathon_rg
 }
 
+var openAIServiceName = 'opai-${appNamePrefix}-${nameSuffix}'
+// module finsum_openAI './modules/cognitive_services/open_ai.bicep' = {
+//   name: 'myOpenAIDeployment'
+//   params: {
+//     openAIServiceName: openAIServiceName
+//     location: hostingPlanLocation
+//     tags: tags
+//   }
+//   scope: hackathon_rg
+// }
+
 module finsum_functionApps './modules/web/function_apps/functionapps.bicep' = {
   name: 'myFunctionsAppDeployment'
   params: {
@@ -103,6 +131,8 @@ module finsum_functionApps './modules/web/function_apps/functionapps.bicep' = {
     blobContainerName: hackathon_stg.outputs.blobContainerName
     formRecognizerApiEndpoint: finsum_formRecognizer.outputs.formRecognizerEndpoint
     formRecognizerApiKey: finsum_formRecognizer.outputs.formRecognizerApiKey
+    //azureOpenAIApiEndpoint: finsum_openAI.outputs.openAIEndpoint
+    //azureOpenAIApiKey: finsum_openAI.outputs.openAIApiKey
   }
   scope: hackathon_rg
 }

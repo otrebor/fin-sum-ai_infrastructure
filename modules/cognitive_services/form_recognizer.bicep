@@ -10,7 +10,7 @@ param location string = resourceGroup().location
 param sku string = 'S0'
 
 @description('Tags to apply to the Application Insights Instance')
-param tags object
+param tags object = {}
 
 resource frmRecognizer 'Microsoft.CognitiveServices/accounts@2021-04-30' = {
   name: formRecognizerServiceName
