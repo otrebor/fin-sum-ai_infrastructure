@@ -1,15 +1,14 @@
+# FIN-SUM-AI Infrastructure
 # Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+This project collects the Bicep scripts used to setup the infrastructure on Azure for the project fin-sum-ai
 
 # Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+ you can use this project in two ways:
+1.	If you want to deploy the infrastructure under an existing resource group: az deployment group create --template-file "main_rg.bicep" --resource-group Cteam8
+2.	If you want to create the infrastructure under an existing subscription: az deployment sub create --template-file "main_sub.bicep" --location WestEurope
 
 # Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+az bicep build --file .\main.bicep
 
 # Contribute
 TODO: Explain how other users and developers can contribute to make your code better. 
@@ -19,13 +18,4 @@ If you want to learn more about creating good readme files then refer the follow
 - [Visual Studio Code](https://github.com/Microsoft/vscode)
 - [Chakra Core](https://github.com/Microsoft/ChakraCore)
 
-# finsumai_infrastructure
 
-
-## To build 
-
-az bicep build --file .\main.bicep
-
-## To deploy:
-
-az deployment sub create --template-file "main.bicep" --location GermanyWestCentral

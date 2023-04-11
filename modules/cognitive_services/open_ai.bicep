@@ -12,7 +12,14 @@ param sku string = 'S0'
 @description('Tags to apply to the Application Insights Instance')
 param tags object = {}
 
-resource open_ai 'Microsoft.CognitiveServices/accounts@2022-03-01' = {
+@allowed([
+  'new'
+  'existing'
+])
+param newOrExistingResourceGroup string = 'existing'
+
+
+resource open_ai_new 'Microsoft.CognitiveServices/accounts@2022-03-01' = if (newOrExistingResourceGroup == 'new') {
   name: openAIServiceName
   location: location
   kind: 'OpenAI'
@@ -23,6 +30,10 @@ resource open_ai 'Microsoft.CognitiveServices/accounts@2022-03-01' = {
   properties: {
     customSubDomainName: toLower(openAIServiceName)
   }
+}
+
+resource open_ai 'Microsoft.CognitiveServices/accounts@2022-03-01' existing = {
+  name: openAIServiceName
 }
 
 output openAIName string = open_ai.name

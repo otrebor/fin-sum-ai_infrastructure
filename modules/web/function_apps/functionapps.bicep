@@ -61,7 +61,8 @@ var appSpecificAppSettings = [
   }
 ]
 
-var cSharpAppFunctionName = 'afcs-${appNamePrefix}-${nameSuffix}'
+var applicationFunctionPrefix = 'app-func'
+var cSharpAppFunctionName = '${applicationFunctionPrefix}-cs-${appNamePrefix}-${nameSuffix}'
 
 module hackathon_afcs './functionapp_cs.bicep' = {
   name: 'myCSharpFunctionAppDeployment'
@@ -77,7 +78,7 @@ module hackathon_afcs './functionapp_cs.bicep' = {
   }
 }
 
-var pythonAppFunctionName = 'afpy-${appNamePrefix}-${nameSuffix}'
+var pythonAppFunctionName = '${applicationFunctionPrefix}-py-${appNamePrefix}-${nameSuffix}'
 
 module hackathon_afpy './functionapp_py.bicep' = {
   name: 'myPythonFunctionAppDeployment'
