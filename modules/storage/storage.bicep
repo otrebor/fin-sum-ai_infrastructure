@@ -108,4 +108,4 @@ output blobStorageConnectionString string = blobStorageConnectionString
 output blobContainerName string = blobContainer.name
 
 output blobEndpointHostName string = replace(replace(storageAccount.properties.primaryEndpoints.blob, 'https://', ''), '/', '')
-output storageResourceId string = storageAccount.id
+output storageAccountId string = storageAccount.id

@@ -21,7 +21,6 @@ resource frmRecognizer 'Microsoft.CognitiveServices/accounts@2021-04-30' = {
   tags: tags
   kind: 'FormRecognizer'
   properties: {
-    restore: true
     customSubDomainName: formRecognizerServiceName
     publicNetworkAccess: 'Enabled'
     networkAcls: {

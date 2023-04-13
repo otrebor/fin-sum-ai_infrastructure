@@ -9,9 +9,12 @@ param location string = resourceGroup().location
 ])
 param sku string = 'S0'
 
+param tags object = {}
+
 resource cognitiveService 'Microsoft.CognitiveServices/accounts@2021-10-01' = {
   name: cognitiveServiceName
   location: location
+  tags: tags
   sku: {
     name: sku
   }

@@ -21,6 +21,7 @@ param resourceGrouplocation string = resourceGroup().location
 
 var nameSuffix = substring(uniqueString(resourceGroup().id), 0, 5)
 
+
 // var kvName = 'kv${appNamePrefix}${nameSuffix}'
 
 // module hackathon_kv './modules/key_vault/keyvault.bicep' = {
@@ -32,6 +33,10 @@ var nameSuffix = substring(uniqueString(resourceGroup().id), 0, 5)
 //   }
 //   scope: resourceGroup()
 // }
+
+// #################################################################################################
+// STORAGE SECTION
+// #################################################################################################
 
 var saName = 'storageacc${appNamePrefix}${nameSuffix}'
 var bcName = 'blob-cont-${appNamePrefix}-${nameSuffix}'
@@ -47,30 +52,9 @@ module finsum_storageAccount './modules/storage/storage.bicep' = {
   scope:  resourceGroup()
 }
 
-
-var hpName = 'host-plan-${appNamePrefix}-${nameSuffix}'
-
-module finsum_hostingPlan './modules/web/hostingplan.bicep' = {
-  name: 'myHostingPlanDeployment'
-  params: {
-    location: hostingPlanLocation
-    hostingPlanName: hpName
-    tags: tags
-  }
-  scope: resourceGroup()
-}
-
-var appInsName = 'app-ins-${appNamePrefix}-${nameSuffix}'
-
-module finsum_appInsights './modules/insights/app_insights.bicep' = {
-  name: 'myAppInsightsDeployment'
-  params: {
-    location: appInsightsLocation
-    applicationInsightsName: appInsName
-    tags: tags
-  }
-  scope: resourceGroup()
-}
+// #################################################################################################
+// COGNITIVE SERVICES SECTION
+// #################################################################################################
 
 var formRecognizerServiceName = 'form-rec-${appNamePrefix}-${nameSuffix}'
 
@@ -96,21 +80,64 @@ module finsum_openAI './modules/cognitive_services/open_ai.bicep' = {
   scope: resourceGroup()
 }
 
-module finsum_functionApps './modules/web/function_apps/functionapps.bicep' = {
-  name: 'myFunctionsAppDeployment'
+var textToSpeechServiceName = 'text-to-speech-${appNamePrefix}-${nameSuffix}'
+
+module finsum_textToSpeech './modules/cognitive_services/text_to_speech.bicep' = {
+  name: 'myTextToSpeechDeployment'
   params: {
-    appNamePrefix: appNamePrefix
-    nameSuffix: nameSuffix
+    textToSpeechServiceName: textToSpeechServiceName
     location: hostingPlanLocation
-    applicationInsightInstrumentationKey: finsum_appInsights.outputs.applicationInsightInstrumentationKey
-    blobStorageConnectionString: finsum_storageAccount.outputs.blobStorageConnectionString
-    hostingPlanId: finsum_hostingPlan.outputs.hostingPlanId
     tags: tags
-    blobContainerName: finsum_storageAccount.outputs.blobContainerName
-    formRecognizerApiEndpoint: finsum_formRecognizer.outputs.formRecognizerEndpoint
-    formRecognizerApiKey: finsum_formRecognizer.outputs.formRecognizerApiKey
-    azureOpenAIApiEndpoint: finsum_openAI.outputs.openAIEndpoint
-    azureOpenAIApiKey: finsum_openAI.outputs.openAIApiKey
+  }
+  scope: resourceGroup()
+}
+
+// #################################################################################################
+// MEDIA SERVICES SECTION
+// #################################################################################################
+
+// !!!!!!!!!!! Disallowed by policy !!!!!!!!!!!!!!!
+
+// var mediaServicesAccountName = 'mediasvc${appNamePrefix}${nameSuffix}'
+
+// module finsum_mediaService './modules/media_services/media_services.bicep' = {
+//   name: 'myMediaServicesDeployment'
+//   params: {
+//     mediaServicesAccountName: mediaServicesAccountName
+//     storageAccountId: finsum_storageAccount.outputs.storageAccountId
+//     location: hostingPlanLocation
+//     tags: tags
+//   }
+//   scope: resourceGroup()
+// }
+
+// #################################################################################################
+// WEB APPLICATION SECTION
+// #################################################################################################
+
+var hpName = 'host-plan-${appNamePrefix}-${nameSuffix}'
+
+module finsum_hostingPlan './modules/web/hostingplan.bicep' = {
+  name: 'myHostingPlanDeployment'
+  params: {
+    location: hostingPlanLocation
+    hostingPlanName: hpName
+    tags: tags
+  }
+  scope: resourceGroup()
+}
+// ------------------------------
+// MONITORING 
+// ------------------------------
+
+var appInsName = 'app-ins-${appNamePrefix}-${nameSuffix}'
+
+module finsum_appInsights './modules/insights/app_insights.bicep' = {
+  name: 'myAppInsightsDeployment'
+  params: {
+    location: appInsightsLocation
+    applicationInsightsName: appInsName
+    tags: tags
   }
   scope: resourceGroup()
 }
@@ -128,7 +155,28 @@ module hackathon_law './modules/insights/log_analytics.bicep' = {
   scope: resourceGroup()
 }
 
-
-
+// ------------------------------
+// APPS
+// ------------------------------
+module finsum_functionApps './modules/web/function_apps/functionapps.bicep' = {
+  name: 'myFunctionsAppDeployment'
+  params: {
+    appNamePrefix: appNamePrefix
+    nameSuffix: nameSuffix
+    location: hostingPlanLocation
+    applicationInsightInstrumentationKey: finsum_appInsights.outputs.applicationInsightInstrumentationKey
+    blobStorageConnectionString: finsum_storageAccount.outputs.blobStorageConnectionString
+    hostingPlanId: finsum_hostingPlan.outputs.hostingPlanId
+    tags: tags
+    blobContainerName: finsum_storageAccount.outputs.blobContainerName
+    formRecognizerApiEndpoint: finsum_formRecognizer.outputs.formRecognizerEndpoint
+    formRecognizerApiKey: finsum_formRecognizer.outputs.formRecognizerApiKey
+    azureOpenAIApiEndpoint: finsum_openAI.outputs.openAIEndpoint
+    azureOpenAIApiKey: finsum_openAI.outputs.openAIApiKey
+    textToSpeechApiEndpoint: finsum_textToSpeech.outputs.textToSpeechEndpoint
+    textToSpeechApiKey: finsum_textToSpeech.outputs.textToSpeechApiKey
+  }
+  scope: resourceGroup()
+}
 
 

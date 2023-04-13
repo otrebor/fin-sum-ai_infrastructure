@@ -25,6 +25,11 @@ param azureOpenAIApiEndpoint string = 'OPENAI_API_ENDPOINT'
 @secure()
 param azureOpenAIApiKey string = newGuid()
 
+param textToSpeechApiEndpoint string = 'TEXT_TO_SPEECH_ENDPOINT'
+
+@secure()
+param textToSpeechApiKey string = newGuid()
+
 
 var appSpecificAppSettings = [
   {
@@ -58,6 +63,14 @@ var appSpecificAppSettings = [
   {
     name: 'FORM_RECOGNIZER_API_KEY'
     value: formRecognizerApiKey
+  }
+  {
+    name: 'TEXT_TO_SPEECH_API_ENDPOINT'
+    value: textToSpeechApiEndpoint
+  }
+  {
+    name: 'TEXT_TO_SPEECH_API_KEY'
+    value: textToSpeechApiKey
   }
 ]
 
