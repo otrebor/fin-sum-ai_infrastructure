@@ -63,6 +63,18 @@ var runtimeSpecificAppSettings =  [
     name: 'AzureWebJobsSecretStorageType'
     value: 'files'
   }
+  {
+    name: 'AzureWebJobs.TXTFinancialReportTrigger.Disabled'
+    value: false
+  }
+  {
+    name: 'AzureWebJobs.JokeTrigger.Disabled'
+    value: false
+  }
+  {
+    name: 'AzureWebJobs.HttpTrigger.Disabled'
+    value: false
+  }
 ]
 
 resource functionApp 'Microsoft.Web/sites@2021-03-01' = {

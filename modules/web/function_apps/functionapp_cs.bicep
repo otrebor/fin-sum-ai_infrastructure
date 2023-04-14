@@ -67,6 +67,18 @@ var runtimeSpecificAppSettings = [
     name: 'FUNCTIONS_WORKER_RUNTIME'
     value: runtime
   }
+  {
+    name: 'AzureWebJobs.DOCFinancialReportTrigger.Disabled'
+    value: false
+  }
+  {
+    name: 'AzureWebJobs.PDFFinancialReportTrigger.Disabled'
+    value: false
+  }
+  {
+    name: 'AzureWebJobs.SummaryToAudioTrigger.Disabled'
+    value: false
+  }
 ]
 
 resource functionApp 'Microsoft.Web/sites@2021-03-01' = {

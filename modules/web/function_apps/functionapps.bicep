@@ -49,6 +49,10 @@ var appSpecificAppSettings = [
     value: 'financial-report-summaries'
   }
   {
+    name: 'FINSUM_REPORTS_AUDIO_SUMMARY_PATH'
+    value: 'financial-report-summaries-audio'
+  }
+  {
     name: 'AZURE_OPENAI_API_KEY'
     value: azureOpenAIApiKey
   }
