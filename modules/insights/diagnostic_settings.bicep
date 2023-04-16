@@ -1,52 +1,28 @@
 // https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/resource-manager-diagnostic-settings?tabs=bicep#diagnostic-setting-for-a-log-analytics-workspace
 
-
 @description('That name is the name of our application. It has to be unique.Type a name followed by your resource group name. (<name>-<resourceGroupName>)')
-param diagnosticSettingsName string = 'ds-${uniqueString(resourceGroup().id)}'
+param diagnosticSettingsName string = 'diagn-${uniqueString(resourceGroup().id)}'
 
 param logAnalyticsWorkspaceId string
 
-param workspaceName string
-param settingName string
-param workspaceId string
-param storageAccountId string
-param eventHubAuthorizationRuleId string
-param eventHubName string
+param logAnalyticsWorkspaceName string
 
-resource workspace 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' existing = {
-  name: workspaceName
+param storageAccountId string
+
+resource finsum_logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' existing = {
+  name: logAnalyticsWorkspaceName
 }
-resource setting 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
-  name: settingName
-  scope: workspace
+
+resource finsum_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2017-05-01-preview' = {
+  scope: finsum_logAnalyticsWorkspace
+  name: diagnosticSettingsName
   properties: {
-    workspaceId: workspaceId
+    workspaceId: logAnalyticsWorkspaceId
     storageAccountId: storageAccountId
-    eventHubAuthorizationRuleId: eventHubAuthorizationRuleId
-    eventHubName: eventHubName
     logs: [
       {
         category: 'Audit'
         enabled: true
-      }
-    ]
-  }
-}
-
-
-resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
-  name: diagnosticSettingsName
-  scope: resourceGroup()
-  properties: {
-    workspaceId: logAnalyticsWorkspaceId
-    logs: [
-      {
-        category: 'FunctionAppLogs'
-        enabled: true
-        retentionPolicy: {
-          days: 0
-          enabled: false
-        }
       }
     ]
     metrics: [

@@ -130,18 +130,6 @@ module finsum_hostingPlan './modules/web/hostingplan.bicep' = {
 // MONITORING 
 // ------------------------------
 
-var appInsName = 'app-ins-${appNamePrefix}-${nameSuffix}'
-
-module finsum_appInsights './modules/insights/app_insights.bicep' = {
-  name: 'myAppInsightsDeployment'
-  params: {
-    location: appInsightsLocation
-    applicationInsightsName: appInsName
-    tags: tags
-  }
-  scope: resourceGroup()
-}
-
 var logAnalyticsWorkspaceName = 'log-an-${appNamePrefix}-${nameSuffix}'
 
 module hackathon_law './modules/insights/log_analytics.bicep' = {
@@ -154,6 +142,34 @@ module hackathon_law './modules/insights/log_analytics.bicep' = {
   }
   scope: resourceGroup()
 }
+
+
+var appInsName = 'app-insights-${appNamePrefix}-${nameSuffix}'
+
+module finsum_appInsights './modules/insights/app_insights.bicep' = {
+  name: 'myAppInsightsDeployment'
+  params: {
+    location: appInsightsLocation
+    applicationInsightsName: appInsName
+    tags: tags
+    logAnalyticsWorkspaceId: hackathon_law.outputs.logAnalyticsWorkspaceId
+  }
+  scope: resourceGroup()
+}
+
+var diagnosticSettingsName = 'diagnostic-${appNamePrefix}-${nameSuffix}'
+
+module finsumai_diagnosticSettings './modules/insights/diagnostic_settings.bicep' = {
+  name: 'myDiagnosticSettingsDeployment'
+  params: {
+    diagnosticSettingsName: diagnosticSettingsName
+    logAnalyticsWorkspaceId: hackathon_law.outputs.logAnalyticsWorkspaceId
+    logAnalyticsWorkspaceName: hackathon_law.outputs.logAnalyticsWorkspaceName
+    storageAccountId: finsum_storageAccount.outputs.storageAccountId
+  }
+  scope: resourceGroup()
+}
+
 
 // ------------------------------
 // APPS

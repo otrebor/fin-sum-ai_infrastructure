@@ -8,6 +8,9 @@ param location string = resourceGroup().location
 @description('Application Insights Name')
 param applicationInsightsName string
 
+@description('Log analytics workspace ID')
+param logAnalyticsWorkspaceId string
+
 @description('Tags to apply to the Application Insights Instance')
 param tags object = {}
 
@@ -18,6 +21,8 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   properties: {
     Application_Type: 'web'
     Request_Source: 'rest'
+    Flow_Type: 'Bluefield'
+    WorkspaceResourceId: logAnalyticsWorkspaceId
   }
   tags: tags
 }
