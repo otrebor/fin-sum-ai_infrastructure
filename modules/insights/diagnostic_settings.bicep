@@ -24,14 +24,22 @@ resource finsum_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2017-0
         category: 'Audit'
         enabled: true
       }
+      // {
+      //   category: 'FunctionAppLogs'
+      //   enabled: true
+      //   retentionPolicy: {
+      //     enabled: false
+      //     days: 120
+      //   }
+      // }
     ]
     metrics: [
       {
         category: 'AllMetrics'
-        enabled: false
+        enabled: true
         retentionPolicy: {
           enabled: false
-          days: 0
+          days: 120
         }
       }
     ]

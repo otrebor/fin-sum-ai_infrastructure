@@ -41,12 +41,24 @@ var appSpecificAppSettings = [
     value: 'financial-reports'
   }
   {
-    name: 'FINSUM_REPORTS_OCR_PATH'
-    value: 'financial-reports-ocr'
+    name: 'FINSUM_REPORTS_TXT_PATH'
+    value: 'financial-reports-txt'
+  }
+  {
+    name: 'FINSUM_UPLOAD_RELATIVE_PATH'
+    value: 'upload'
+  }
+  {
+    name: 'FINSUM_REPORTS_OCR_RELATIVE_PATH'
+    value: 'ocr'
   }
   {
     name: 'FINSUM_REPORTS_SUMMARY_PATH'
     value: 'financial-report-summaries'
+  }
+  {
+    name: 'FINSUM_REPORTS_SUMMARY_SUFFIX'
+    value: '_summary'
   }
   {
     name: 'FINSUM_REPORTS_AUDIO_SUMMARY_PATH'
