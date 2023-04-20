@@ -57,6 +57,10 @@ var appSpecificAppSettings = [
     value: 'financial-report-summaries'
   }
   {
+    name: 'FINSUM_REPORTS_LIST_SUMMARY_PATH'
+    value: 'financial-report-list-summaries'
+  }
+  {
     name: 'FINSUM_REPORTS_SUMMARY_SUFFIX'
     value: '_summary'
   }

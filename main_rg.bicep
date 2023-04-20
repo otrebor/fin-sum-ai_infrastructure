@@ -126,6 +126,20 @@ module finsum_hostingPlan './modules/web/hostingplan.bicep' = {
   }
   scope: resourceGroup()
 }
+
+// Disallowed by policy
+// var swsName = 'web-site-${appNamePrefix}-${nameSuffix}'
+// module finsum_staticWebSite './modules/web/static_site.bicep' = {
+//   name: 'myStaticWebSiteDeployment'
+//   params: {
+//     location: 'eastus2'
+//     staticWebSiteName: swsName
+//     tags: tags
+//   }
+//   scope: resourceGroup()
+// }
+
+
 // ------------------------------
 // MONITORING 
 // ------------------------------
